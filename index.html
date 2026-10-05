@@ -1,0 +1,829 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>마찰력 | 중학교 과학 1</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Jua&family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#F3F6FB; --surface:#FFFFFF; --ink:#1D2433; --muted:#5B6578; --line:#DCE3EE;
+  --brand:#0E8A7E; --brand-soft:#E0F3F1; --brand-ink:#FFFFFF;
+  --f1:#E0413A; --f1-soft:#FDE9E8; --f2:#1F63C8; --f2-soft:#E6EEFB;
+  --net:#7B3FD6; --net-soft:#F1EAFD;
+  --ok:#1E9E62; --ok-soft:#E3F6EC; --bad:#D6453D; --bad-soft:#FCE8E7;
+  --note:#FFF6DB; --note-line:#F0D98A;
+  --grid:#D6E4F3; --grid-major:#AFC8E6; --lane:#8FA9C9;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#121722; --surface:#1B2230; --ink:#E8EDF6; --muted:#9AA6BA; --line:#2C3547;
+    --brand:#3CC4B4; --brand-soft:#16312F; --brand-ink:#0D1A19;
+    --f1:#FF6B63; --f1-soft:#3A1F20; --f2:#5B9BFF; --f2-soft:#1B2A45;
+    --net:#B38CFF; --net-soft:#2A2140;
+    --ok:#3ECF8E; --ok-soft:#173427; --bad:#FF7A72; --bad-soft:#3A1F20;
+    --note:#2F2A1A; --note-line:#6B5B24;
+    --grid:#243246; --grid-major:#34496A; --lane:#4E6A92;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#121722; --surface:#1B2230; --ink:#E8EDF6; --muted:#9AA6BA; --line:#2C3547;
+  --brand:#3CC4B4; --brand-soft:#16312F; --brand-ink:#0D1A19;
+  --f1:#FF6B63; --f1-soft:#3A1F20; --f2:#5B9BFF; --f2-soft:#1B2A45;
+  --net:#B38CFF; --net-soft:#2A2140;
+  --ok:#3ECF8E; --ok-soft:#173427; --bad:#FF7A72; --bad-soft:#3A1F20;
+  --note:#2F2A1A; --note-line:#6B5B24;
+  --grid:#243246; --grid-major:#34496A; --lane:#4E6A92;
+}
+*,*::before,*::after{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:calc(env(safe-area-inset-top,0px) + 110px)}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Noto Sans KR",system-ui,-apple-system,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;line-height:1.7;font-size:17px;word-break:keep-all}
+h1,h2,h3,.brand,.hand{font-family:"Jua","Noto Sans KR",sans-serif;font-weight:400}
+button{font:inherit;cursor:pointer}
+:focus-visible{outline:3px solid var(--brand);outline-offset:2px;border-radius:8px}
+
+/* header */
+.topbar{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:var(--surface);border-bottom:1px solid var(--line)}
+.topbar .in{max-width:1040px;margin:0 auto;padding:10px 18px 0}
+.brand{font-size:22px;display:flex;align-items:center;gap:8px}
+.chips{display:flex;gap:6px;overflow-x:auto;padding:8px 0 10px;scrollbar-width:none}
+.chips::-webkit-scrollbar{display:none}
+.chips a{flex:none;text-decoration:none;color:var(--muted);font-size:14px;font-weight:500;padding:5px 12px;border:1px solid var(--line);border-radius:999px;background:var(--bg)}
+.chips a:hover{color:var(--brand);border-color:var(--brand)}
+.chips a.hl{background:var(--brand);color:var(--brand-ink);border-color:var(--brand)}
+
+main{max-width:1040px;margin:0 auto;padding:18px 18px 40px}
+.crumb{font-size:14px;color:var(--muted);margin:4px 0 14px}
+
+/* hero */
+.hero{position:relative;background:linear-gradient(135deg,var(--brand-soft),var(--net-soft));border-radius:24px;padding:34px 30px;overflow:hidden;margin-bottom:22px}
+.hero h1{font-size:clamp(30px,5vw,44px);margin:0 0 8px;line-height:1.25}
+.hero p{margin:0;max-width:34em;color:var(--muted)}
+.hero .floaters{position:absolute;right:26px;top:50%;transform:translateY(-50%);display:flex;gap:10px;font-size:42px}
+@media (max-width:720px){.hero .floaters{position:static;transform:none;margin-top:16px;font-size:34px}}
+
+/* sections */
+.sec{background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:26px 26px 24px;margin:0 0 18px}
+.eyebrow{display:inline-block;font-size:14px;font-weight:700;color:var(--brand);background:var(--brand-soft);padding:3px 10px;border-radius:999px}
+.sec-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap;margin:10px 0 14px}
+.sec-head h2{margin:0;font-size:clamp(22px,3.4vw,28px);line-height:1.35}
+.page{flex:none;font-size:13px;color:var(--muted);border:1px solid var(--line);border-radius:8px;padding:2px 8px;margin-top:4px}
+p{margin:0 0 10px}
+strong{font-weight:700}
+
+.goal{display:flex;gap:12px;align-items:flex-start;padding:12px 0;border-top:1px dashed var(--line)}
+.goal:first-of-type{border-top:0}
+.num{flex:none;width:30px;height:30px;border-radius:50%;background:var(--brand);color:var(--brand-ink);display:grid;place-items:center;font-weight:700;font-size:15px}
+
+.btn{border:0;border-radius:12px;padding:9px 16px;font-weight:700;background:var(--brand);color:var(--brand-ink)}
+.btn.ghost{background:transparent;color:var(--brand);border:1.5px solid var(--brand)}
+.btn.small{padding:6px 12px;font-size:14px}
+.reveal{display:none;margin-top:12px;padding:14px 16px;border-radius:14px;background:var(--brand-soft);border-left:5px solid var(--brand)}
+.reveal.show{display:block}
+
+.think{display:grid;grid-template-columns:auto 1fr;gap:20px;align-items:center}
+.think .big{font-size:56px;line-height:1}
+@media (max-width:560px){.think{grid-template-columns:1fr}}
+
+.rule-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:14px}
+@media (max-width:720px){.rule-grid{grid-template-columns:1fr}}
+.rule{border:1px solid var(--line);border-radius:16px;padding:16px 18px;background:var(--bg)}
+.rule h3{margin:0 0 8px;font-size:20px}
+.mini{display:block;width:100%;height:auto;margin:6px 0 10px}
+.rule dl{margin:0;display:grid;grid-template-columns:auto 1fr;gap:4px 10px;font-size:16px}
+.rule dt{font-weight:700;color:var(--muted)}
+.rule dd{margin:0}
+
+.tip{background:var(--note);border:1px solid var(--note-line);border-radius:14px;padding:12px 16px;font-size:15px;margin-top:14px}
+
+/* simulation */
+.modes{display:flex;gap:8px;flex-wrap:wrap;margin:4px 0 14px}
+.mode{border:1.5px solid var(--line);background:var(--bg);color:var(--ink);border-radius:12px;padding:9px 16px;font-weight:700}
+.mode[aria-pressed="true"]{background:var(--ink);color:var(--surface);border-color:var(--ink)}
+.board{border:1px solid var(--line);border-radius:18px;background:var(--surface);padding:10px}
+#sim{display:block;width:100%;height:auto;touch-action:none;user-select:none;-webkit-user-select:none}
+.caption{font-size:13px;color:var(--muted);text-align:right;margin:4px 6px 0}
+.panel{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:12px}
+@media (max-width:720px){.panel{grid-template-columns:1fr}}
+.ctl{border-radius:14px;padding:10px 12px;display:flex;align-items:center;justify-content:space-between;gap:8px}
+.ctl .lbl{font-weight:700;font-size:15px}
+.ctl .val{font-size:15px}
+.ctl .step{display:flex;gap:6px}
+.ctl .step button{width:38px;height:38px;border-radius:10px;border:0;font-weight:900;font-size:16px;background:var(--surface);color:var(--ink);box-shadow:inset 0 0 0 1.5px var(--line)}
+.ctl .step button:disabled{opacity:.35;cursor:default}
+.c1{background:var(--f1-soft)} .c1 .lbl{color:var(--f1)}
+.c2{background:var(--f2-soft)} .c2 .lbl{color:var(--f2)}
+.c3{background:var(--net-soft)} .c3 .lbl{color:var(--net)}
+.result{margin-top:12px;border-radius:14px;padding:14px 16px;background:var(--bg);border:1px solid var(--line);min-height:56px}
+.result .formula{font-family:"Jua",sans-serif;font-size:24px;color:var(--net)}
+.result.ok{background:var(--ok-soft);border-color:var(--ok)}
+.result.bad{background:var(--bad-soft);border-color:var(--bad)}
+.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;align-items:center}
+.score{margin-left:auto;font-size:15px;color:var(--muted)}
+.types{display:flex;gap:6px;flex-wrap:wrap;align-items:center;font-size:14px;color:var(--muted)}
+.types button{border:1px solid var(--line);background:var(--surface);color:var(--muted);border-radius:999px;padding:4px 12px;font-size:14px}
+.types button[aria-pressed="true"]{border-color:var(--net);color:var(--net);background:var(--net-soft);font-weight:700}
+.hidden{display:none!important}
+
+.lane-hit{cursor:ew-resize}
+.lane-lock{cursor:default}
+#box{transition:transform .6s cubic-bezier(.3,1.4,.5,1)}
+@media (prefers-reduced-motion:reduce){#box{transition:none}html{scroll-behavior:auto}}
+
+.steps{counter-reset:s;margin:0;padding:0;list-style:none}
+.steps li{display:flex;gap:12px;align-items:flex-start;padding:10px 0;border-top:1px dashed var(--line)}
+.steps li:first-child{border-top:0}
+
+/* quiz */
+.q{padding:16px 0;border-top:1px dashed var(--line)}
+.q:first-of-type{border-top:0;padding-top:4px}
+.q .ask{display:flex;gap:10px;align-items:flex-start;margin-bottom:10px}
+.choices{display:flex;gap:8px;flex-wrap:wrap}
+.choice{border:1.5px solid var(--line);background:var(--bg);color:var(--ink);border-radius:12px;padding:8px 16px;font-weight:700}
+.choice.right{background:var(--ok-soft);border-color:var(--ok);color:var(--ok)}
+.choice.wrong{background:var(--bad-soft);border-color:var(--bad);color:var(--bad)}
+.fb{display:none;margin-top:10px;padding:12px 14px;border-radius:12px;font-size:16px}
+.fb.show{display:block}
+.fb.ok{background:var(--ok-soft)} .fb.no{background:var(--bad-soft)}
+
+.recap{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media (max-width:720px){.recap{grid-template-columns:1fr}}
+.recap .card{border-radius:16px;padding:16px 18px}
+.recap .same{background:var(--f1-soft)} .recap .opp{background:var(--f2-soft)}
+.recap .card h3{margin:0 0 6px;font-size:20px}
+
+.eval{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px 0;border-top:1px dashed var(--line)}
+.eval:first-of-type{border-top:0}
+.stars{display:flex;gap:2px;flex:none}
+.stars button{background:none;border:0;font-size:26px;color:var(--line);padding:0 2px;line-height:1}
+.stars button.on{color:#F2B705}
+
+footer{text-align:center;color:var(--muted);font-size:14px;padding:10px 0 30px}
+/* ---- 추가 스타일 ---- */
+.brandrow{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.home{flex:none;text-decoration:none;font-size:14px;font-weight:700;color:var(--brand);border:1.5px solid var(--brand);border-radius:999px;padding:4px 12px}
+.home:hover{background:var(--brand);color:var(--brand-ink)}
+
+.fig{margin:0;border:1px solid var(--line);border-radius:16px;background:#FFFFFF;padding:10px;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.fig img{display:block;max-width:100%;height:auto}
+.fig figcaption{font-size:14px;color:#5B6578;margin-top:6px;text-align:center}
+.fig.wide img{max-height:340px}
+.pair{display:grid;grid-template-columns:1.25fr 1fr;gap:12px;margin:12px 0}
+@media (max-width:720px){.pair{grid-template-columns:1fr}}
+
+.case{border:1px solid var(--line);border-radius:18px;padding:18px;margin-top:14px;background:var(--bg)}
+.case h3{margin:0 0 6px;font-size:21px}
+.case.same{border-left:6px solid var(--f1)}
+.case.opp{border-left:6px solid var(--f2)}
+.eq{display:inline-block;font-family:"Jua",sans-serif;font-size:20px;color:var(--net);background:var(--net-soft);border-radius:10px;padding:2px 12px;margin:4px 0}
+
+.def{border-radius:16px;padding:16px 18px;background:var(--net-soft);border-left:6px solid var(--net);margin:6px 0 14px;font-size:18px}
+.conds{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:12px 0}
+@media (max-width:720px){.conds{grid-template-columns:1fr}}
+.cond{border:1px solid var(--line);border-radius:14px;padding:12px 14px;background:var(--surface)}
+.cond b{display:block;font-family:"Jua",sans-serif;font-weight:400;font-size:19px;color:var(--net)}
+
+.judge{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px}
+@media (max-width:720px){.judge{grid-template-columns:1fr}}
+.jcard{border:1px solid var(--line);border-radius:16px;padding:12px 14px;background:var(--bg)}
+.jcard svg{display:block;width:100%;height:auto}
+.jcard .tag{font-weight:700;color:var(--muted);font-size:14px}
+.jcard .choices{margin-top:6px}
+
+.blank{font:inherit;font-weight:700;width:8em;max-width:100%;text-align:center;border:0;border-bottom:2.5px solid var(--brand);background:transparent;color:var(--ink);padding:0 4px;margin:0 4px}
+.blank.right{border-color:var(--ok);color:var(--ok)}
+.blank.wrong{border-color:var(--bad);color:var(--bad)}
+
+.bogi{border:1.5px dashed var(--line);border-radius:14px;padding:10px 14px;margin:6px 0 10px;background:var(--bg)}
+.bogi .it{display:flex;gap:10px;align-items:flex-start;padding:4px 0}
+.pick{flex:none;width:34px;height:34px;border-radius:10px;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);font-weight:700}
+.pick[aria-pressed="true"]{background:var(--brand);border-color:var(--brand);color:var(--brand-ink)}
+
+.match{display:grid;grid-template-columns:auto 1fr;gap:8px 12px;align-items:center;margin:6px 0 10px}
+.match select{font:inherit;font-size:16px;padding:7px 10px;border-radius:10px;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);max-width:100%}
+.match select.right{border-color:var(--ok);background:var(--ok-soft)}
+.match select.wrong{border-color:var(--bad);background:var(--bad-soft)}
+
+.recap6{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+@media (max-width:860px){.recap6{grid-template-columns:1fr 1fr}}
+@media (max-width:560px){.recap6{grid-template-columns:1fr}}
+.rc{border:1px solid var(--line);border-radius:16px;padding:14px 16px;background:var(--bg)}
+.rc .ic{font-size:26px;line-height:1}
+.rc b{display:block;font-family:"Jua",sans-serif;font-weight:400;font-size:19px;margin:6px 0 2px}
+
+.video{display:flex;gap:18px;align-items:center;flex-wrap:wrap;background:linear-gradient(135deg,var(--f2-soft),var(--brand-soft));border-radius:18px;padding:20px}
+.video .play{flex:none;width:64px;height:64px;border-radius:50%;background:var(--f2);color:#fff;display:grid;place-items:center;font-size:26px}
+.video .txt{flex:1;min-width:200px}
+.video a.btn{text-decoration:none;display:inline-block}
+/* ---- 중력 차시 추가 ---- */
+.think{grid-template-columns:minmax(0,1.1fr) 1fr}
+.think .fig img{max-height:300px}
+@media (max-width:720px){.think{grid-template-columns:1fr}}
+
+.gstage{position:relative;max-width:760px;margin:10px auto 0;background:#fff;border:1px solid var(--line);border-radius:18px;overflow:hidden}
+.gstage img{display:block;width:100%;height:auto}
+.gstage svg{position:absolute;inset:0;width:100%;height:100%;touch-action:none;user-select:none;-webkit-user-select:none}
+.gctl{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:12px}
+@media (max-width:720px){.gctl{grid-template-columns:1fr}}
+.gctl .ctl{background:var(--bg);border:1.5px solid var(--line);cursor:pointer}
+.gctl .ctl.sel{border-color:var(--f1);background:var(--f1-soft)}
+.gctl .ctl.ok{border-color:var(--ok);background:var(--ok-soft)}
+.gctl .ctl.no{border-color:var(--bad);background:var(--bad-soft)}
+.gctl .ctl .lbl{color:var(--ink)}
+
+.ex{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:12px}
+@media (max-width:900px){.ex{grid-template-columns:1fr 1fr}}
+@media (max-width:520px){.ex{grid-template-columns:1fr}}
+.excard{border:1px solid var(--line);border-radius:16px;background:var(--bg);padding:10px;display:flex;flex-direction:column}
+.excard .fig{height:190px;padding:6px}
+.excard .fig img{max-height:176px;width:auto}
+.excard h3{margin:10px 2px 6px;font-size:19px}
+.excard .reveal{font-size:15px}
+
+.vs{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:12px}
+@media (max-width:720px){.vs{grid-template-columns:1fr}}
+.vcol{border-radius:18px;padding:14px;border:1px solid var(--line)}
+.vcol.earth{background:var(--f2-soft)}
+.vcol.moon{background:var(--note)}
+.vcol h3{margin:0 0 8px;font-size:21px}
+.vcol .pics{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.vcol .fig{height:170px;padding:6px}
+.vcol .fig img{max-height:156px;width:auto}
+
+.wm{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:12px}
+@media (max-width:720px){.wm{grid-template-columns:1fr}}
+.wm .card{border-radius:16px;padding:16px 18px;border:1px solid var(--line);background:var(--bg)}
+.wm .card h3{margin:0 0 8px;font-size:22px}
+.wm .card.w{border-top:6px solid var(--f1)}
+.wm .card.m{border-top:6px solid var(--f2)}
+.wm dl{margin:0;display:grid;grid-template-columns:auto 1fr;gap:6px 12px}
+.wm dt{font-weight:700;color:var(--muted)}
+.wm dd{margin:0}
+
+.calc{border:1px solid var(--line);border-radius:18px;padding:18px;margin-top:16px;background:var(--bg)}
+.calc label{font-weight:700}
+.calc input[type=range]{width:100%;accent-color:var(--brand);margin:8px 0 4px}
+.calc .mval{font-family:"Jua",sans-serif;font-size:26px;color:var(--brand)}
+.readout{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:10px}
+@media (max-width:720px){.readout{grid-template-columns:1fr}}
+.readout>div{border-radius:14px;padding:12px 14px;background:var(--surface);border:1px solid var(--line)}
+.readout small{display:block;color:var(--muted);font-size:14px}
+.readout b{font-family:"Jua",sans-serif;font-weight:400;font-size:26px}
+.readout .e b{color:var(--f2)} .readout .mo b{color:#B8860B} .readout .ms b{color:var(--ok)}
+.bar{height:12px;border-radius:99px;background:var(--line);margin-top:8px;overflow:hidden}
+.bar i{display:block;height:100%;border-radius:99px;transition:width .3s}
+
+/* ---- 마찰력 차시 추가 ---- */
+.linkcard{display:flex;gap:14px;align-items:center;flex-wrap:wrap;border-radius:16px;padding:14px 16px;margin-top:14px;background:linear-gradient(135deg,var(--f2-soft),var(--brand-soft))}
+.linkcard .ic{flex:none;width:52px;height:52px;border-radius:50%;display:grid;place-items:center;font-size:22px;color:#fff;background:var(--f2)}
+.linkcard.lab .ic{background:var(--brand)}
+.linkcard .txt{flex:1;min-width:200px}
+.linkcard .txt b{display:block;font-family:"Jua",sans-serif;font-weight:400;font-size:19px}
+.linkcard a.btn{text-decoration:none}
+
+.proc{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);gap:16px;align-items:center;margin:12px 0}
+@media (max-width:760px){.proc{grid-template-columns:1fr}}
+
+.istage{background:#fff;border:1px solid var(--line);border-radius:18px;overflow:hidden;margin-top:12px}
+.istage svg{display:block;width:100%;height:auto}
+.ictl{display:grid;grid-template-columns:auto 1fr;gap:12px;align-items:center;margin-top:12px}
+@media (max-width:640px){.ictl{grid-template-columns:1fr}}
+.seg{display:flex;gap:6px;flex-wrap:wrap}
+.seg button{font:inherit;font-weight:700;font-size:15px;padding:8px 14px;border-radius:999px;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);cursor:pointer}
+.seg button[aria-pressed="true"]{background:var(--brand);border-color:var(--brand);color:var(--brand-ink)}
+.ictl input[type=range]{width:100%;accent-color:var(--brand)}
+.rtable{width:100%;border-collapse:collapse;margin-top:12px;font-size:16px}
+.rtable th,.rtable td{border:1px solid var(--line);padding:9px 10px;text-align:center}
+.rtable th{background:var(--bg);font-weight:700}
+.rtable td.big{font-family:"Jua",sans-serif;font-size:22px;color:var(--brand)}
+
+.cmp{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);gap:16px;align-items:center;margin-top:12px}
+@media (max-width:760px){.cmp{grid-template-columns:1fr}}
+.cmpstage{background:#fff;border:1px solid var(--line);border-radius:18px;overflow:hidden}
+.cmpstage svg{display:block;width:100%;height:auto}
+.cmp .opt{display:flex;flex-direction:column;gap:10px}
+.cmp .opt .lbl{font-weight:700;font-size:15px;color:var(--muted)}
+.meter{border-radius:14px;padding:12px 14px;background:var(--bg);border:1px solid var(--line)}
+.meter b{font-family:"Jua",sans-serif;font-weight:400;font-size:24px;color:var(--f1)}
+
+.figcap3{display:grid;grid-template-columns:1fr 1fr 1fr;text-align:center;font-size:14px;color:var(--muted);margin-top:4px}
+.ex3{grid-template-columns:repeat(3,1fr)}
+@media (max-width:760px){.ex3{grid-template-columns:1fr}}
+.tag2{display:inline-block;font-size:13px;font-weight:700;border-radius:999px;padding:2px 10px;margin-bottom:4px}
+.tag2.up{background:var(--f1-soft);color:var(--f1)}
+.tag2.down{background:var(--f2-soft);color:var(--f2)}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px}
+@media (max-width:640px){.two{grid-template-columns:1fr}}
+.two .card{border-radius:16px;padding:14px 16px;border:1px solid var(--line);background:var(--bg)}
+.two .card h3{margin:0 0 6px;font-size:19px}
+.two ul{margin:0;padding-left:20px}
+.two li{margin:3px 0}
+.legend{display:flex;gap:16px;flex-wrap:wrap;font-size:14px;margin-top:8px;color:var(--muted)}
+.legend span::before{content:"";display:inline-block;width:22px;height:5px;border-radius:3px;margin-right:6px;vertical-align:middle;background:var(--c)}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="in">
+    <div class="brandrow">
+      <div class="brand">💪 힘의 작용 연구소</div>
+      <a class="home" href="https://2026-1y-sub.vercel.app/">🏠 목록으로</a>
+    </div>
+    <nav class="chips" aria-label="학습 순서">
+      <a href="#prev">이전 내용 확인</a>
+      <a href="#goal">학습 목표</a>
+      <a href="#think">생각 깨우기</a>
+      <a href="#lab" class="hl">해보기 ｜ 마찰력 알아보기</a>
+      <a href="#concept1">마찰력의 크기와 방향</a>
+      <a href="#uses">마찰력의 이용</a>
+      <a href="#check">스스로 확인하기</a>
+      <a href="#more">개념 확인 문제</a>
+      <a href="#recap">배운 내용 정리</a>
+      <a href="#eval">평가 길잡이</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <div class="crumb">5. 힘의 작용 › 여러 가지 힘 › 마찰력</div>
+
+  <section class="hero">
+    <h1>겹쳐진 책은 왜 잘 안 빠질까?</h1>
+    <p>책장을 한 장씩 겹쳐 놓은 두 책은 양쪽에서 힘껏 당겨도 잘 분리되지 않아요. 두 물체가 닿는 면에서 운동을 방해하는 힘, 마찰력에 대해 알아봐요.</p>
+    <div class="floaters" aria-hidden="true"><span>📚</span><span>🥾</span><span>🛝</span></div>
+  </section>
+
+  <!-- 이전 내용 -->
+  <section class="sec" id="prev">
+    <span class="eyebrow">↩ 이전 내용 확인하기</span>
+    <div class="sec-head"><h2>지난 시간에 배운 탄성력, 기억나나요?</h2></div>
+    <div class="q">
+      <div class="ask"><span class="num">1</span><div>벽에 고정된 용수철을 손으로 오른쪽으로 잡아당겼다. 탄성력의 방향은?</div></div>
+      <div class="choices" data-answer="왼쪽">
+        <button class="choice">오른쪽</button><button class="choice">왼쪽</button><button class="choice">아래쪽</button>
+      </div>
+      <div class="fb" data-wrong="탄성력은 원래 모양으로 되돌아가려는 방향으로 작용해요.">정답은 <strong>왼쪽</strong>! 탄성력은 잡아당기는 힘과 반대 방향, 즉 원래 모양으로 되돌아가려는 방향으로 작용해요.</div>
+    </div>
+    <div class="q">
+      <div class="ask"><span class="num">2</span><div>용수철이 4 cm 늘어날 때 탄성력이 1.5 N이면, 8 cm 늘어날 때 탄성력은?</div></div>
+      <button class="btn small" data-reveal="r-prev">정답 확인</button>
+      <div class="reveal" id="r-prev">📌 탄성력은 변형된 길이에 비례하므로 <strong>3.0 N</strong>이에요. 오늘은 여러 가지 힘 가운데 세 번째, <strong>마찰력</strong>을 알아봐요.</div>
+    </div>
+  </section>
+
+  <!-- 학습 목표 -->
+  <section class="sec" id="goal">
+    <span class="eyebrow">🎯 이 단원을 배우면</span>
+    <div class="sec-head"><h2>학습 목표</h2><span class="page">교과서 168~169쪽</span></div>
+    <div class="goal"><span class="num">1</span><div><strong>마찰력의 크기와 방향</strong>을 설명할 수 있다.</div></div>
+    <div class="goal"><span class="num">2</span><div><strong>마찰력의 크기에 영향을 주는 요소</strong>를 설명할 수 있다.</div></div>
+  </section>
+
+  <!-- 생각 깨우기 -->
+  <section class="sec" id="think">
+    <span class="eyebrow">💭 생각 깨우기</span>
+    <div class="sec-head"><h2>책장이 겹쳐진 두 책이 잘 분리되지 않는 까닭은?</h2><span class="page">교과서 168쪽</span></div>
+    <div class="think">
+      <figure class="fig"><img src="images/book-pages.png" alt="책장을 서로 겹쳐 놓은 두 책을 두 학생이 양쪽에서 당기는 모습"></figure>
+      <div>
+        <p>책장을 서로 겹쳐 놓은 두 책을 양쪽에서 당겼더니 잘 빠지지 않는다. 책장이 서로 겹쳐진 두 책을 양쪽에서 당길 때 잘 분리되지 않는 까닭은 무엇일까?</p>
+        <button class="btn small" data-reveal="r-think">💡 생각 확인하기</button>
+        <div class="reveal" id="r-think">겹쳐진 책장과 책장 사이에 <strong>미끄러짐을 방해하는 힘</strong>이 작용하기 때문이다.</div>
+      </div>
+    </div>
+    <div class="linkcard">
+      <div class="ic" aria-hidden="true">▶</div>
+      <div class="txt"><b>도움 영상 | 간단한 마찰력 실험</b>책장을 겹친 두 책이 정말 안 떨어지는지 영상으로 확인해 보자. 영상은 새 탭에서 열려요.</div>
+      <a class="btn" href="https://viewer-cms.mirae-n.com/video/viewers/video/video.html?tk=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJhIiwiZXhwIjoxNzkxMTgyOTUxMDE5LCJpYXQiOjE3OTExNzkzNTEwMTksInBhdGgiOiJ2aWRlby8xMDA0ODcwIn0.NEL4BjguFMmY4NBso6aYaAq_6YiYiTt8ki6fTaafn8Q&amp;ofp=video%2F1004870%2F1%2F%EC%A4%91%EB%93%B11_515%281%29_%EB%8F%84%EC%9B%80%EC%98%81%EC%83%81.smil/playlist.m3u8&amp;cu=privw-cms.mirae-n.com/;pridl-cms.mirae-n.com/;pubvw-cms.mirae-n.com/&amp;dy=&amp;fn=%EC%A4%91%EB%93%B11_515%281%29_%EB%8F%84%EC%9B%80%EC%98%81%EC%83%81&amp;tn=%EC%A4%91%EB%93%B11_515%281%29_%EB%8F%84%EC%9B%80%EC%98%81%EC%83%81.jpg&amp;cn=%5B%EB%8F%84%EC%9B%80%20%EC%98%81%EC%83%81%5D%20%EA%B0%84%EB%8B%A8%ED%95%9C%20%EB%A7%88%EC%B0%B0%EB%A0%A5%20%EC%8B%A4%ED%97%98&amp;kc=&amp;ec=&amp;bp=video/1004870/1/" target="_blank" rel="noopener">🎬 도움 영상 보기</a>
+    </div>
+    <div class="def" style="margin-top:16px">책장이 서로 겹쳐진 두 책을 양쪽에서 당기면 잘 분리되지 않는다. 이것은 책장과 책장 사이에 미끄럼을 방해하는 힘이 작용하기 때문이다. 이와 같이 두 물체의 접촉면에서 물체의 운동을 방해하는 힘을 <strong>마찰력</strong>이라고 한다.</div>
+    <p>마찰력은 어떤 특징이 있는지 알아보자.</p>
+  </section>
+
+  <!-- 해보기 -->
+  <section class="sec" id="lab">
+    <span class="eyebrow">🔬 해 보기</span>
+    <div class="sec-head"><h2>마찰력 알아보기</h2><span class="page">교과서 168쪽</span></div>
+    <p>🎯 물체가 미끄러지기 시작하는 빗면의 각도를 측정하여 마찰력의 크기를 비교해 보자.</p>
+    <p style="font-size:15px;color:var(--muted)">🧰 준비물: 긴 나무판, 나무 도막, 사포, 스마트 기기, 집게, 투명 필름, 스마트 기기 케이스, 양면테이프</p>
+
+    <div class="proc">
+      <figure class="fig"><img src="images/incline-board.png" alt="경사계 앱을 켠 스마트 기기와 나무 도막을 올린 긴 나무판을 손으로 들어 기울이는 모습"></figure>
+      <ol class="steps" style="margin:0">
+        <li><span class="num">1</span><div>나무 도막의 한쪽 면에 사포를 붙인다.</div></li>
+        <li><span class="num">2</span><div>경사계 애플리케이션을 실행한 스마트 기기를 긴 나무판에 고정한다.</div></li>
+        <li><span class="num">3</span><div>나무 도막의 <strong>사포 면</strong>을 아래로 하여 나무판 위에 올려놓고, 나무판의 기울기를 점점 크게 하면서 나무 도막이 미끄러지기 시작하는 각도를 측정해 보자.</div></li>
+        <li><span class="num">4</span><div>나무 도막의 <strong>나무 면</strong>을 아래로 하여 같은 방법으로 미끄러지기 시작하는 각도를 측정해 보자.</div></li>
+      </ol>
+    </div>
+
+    <div class="linkcard lab">
+      <div class="ic" aria-hidden="true">🧪</div>
+      <div class="txt"><b>디지털 실험 | 마찰력 알아보기</b>교과서 해 보기 실험 자료를 새 탭에서 열어 확인해 보자.</div>
+      <a class="btn" href="https://pubvw.qmt.kr/web_document/458147/1/html/index.html?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJodHRwczovL3B1YnZ3LnFtdC5rciIsImV4cCI6MTc5MTE4MTgxNTU5MywiaWF0IjoxNzkxMTc4MjE1NTkzLCJwYXRoIjoid2ViX2RvY3VtZW50LzQ1ODE0NyJ9.LgWvWODLGzcNTKdQfRi6_WuN2aXFPo3xSy2ck4MbkJc" target="_blank" rel="noopener">🧪 실험 자료 열기</a>
+    </div>
+
+    <h3 style="margin:22px 0 4px;font-size:20px">🖐️ 가상 실험: 나무판을 기울여 보자</h3>
+    <p style="font-size:15px;color:var(--muted);margin:0">아래쪽에 닿는 면을 고른 뒤 「천천히 기울이기」를 누르거나 슬라이더로 나무판을 기울여 보자. 나무 도막이 미끄러지기 시작하는 순간의 각도가 기록돼요.</p>
+    <div class="istage"><svg id="isvg" viewBox="0 0 680 380" aria-label="나무판을 기울여 나무 도막이 미끄러지는 각도를 재는 가상 실험"></svg></div>
+    <div class="legend"><span style="--c:var(--f2)">빗면을 따라 미끄러져 내려가려는 힘</span><span style="--c:var(--f1)">마찰력</span></div>
+    <div class="ictl">
+      <div class="seg" role="group" aria-label="아래로 놓는 면">
+        <button data-face="sand" aria-pressed="true">사포 면을 아래로</button>
+        <button data-face="wood" aria-pressed="false">나무 면을 아래로</button>
+      </div>
+      <input type="range" id="tilt" min="0" max="40" step="0.5" value="0" aria-label="나무판의 기울기(도)">
+    </div>
+    <div class="actions">
+      <button class="btn" id="auto">▶ 천천히 기울이기</button>
+      <button class="btn ghost" id="ireset">나무 도막 다시 올려놓기</button>
+    </div>
+    <table class="rtable" aria-label="미끄러지기 시작하는 각도 기록">
+      <tr><th>아래로 놓은 면</th><th>사포 면</th><th>나무 면</th></tr>
+      <tr><th>미끄러지기 시작하는 각도</th><td class="big" id="rec-sand">?</td><td class="big" id="rec-wood">?</td></tr>
+    </table>
+    <div class="result" id="i-result" aria-live="polite" style="margin-top:12px"><span style="color:var(--muted)">사포 면과 나무 면을 각각 아래로 하여 미끄러지기 시작하는 각도를 측정해 보자.</span></div>
+
+    <h3 style="margin:22px 0 6px;font-size:20px">📝 활동 후 설명해 보기</h3>
+    <ol class="steps">
+      <li><span class="num">1</span><div>나무 도막이 미끄러지기 시작하는 각도가 더 큰 경우를 고르고, 그렇게 생각한 까닭은 무엇인지 설명해 보자.
+        <div><button class="btn ghost small" data-reveal="r-l1" style="margin-top:6px">예시 답안 보기</button></div>
+        <div class="reveal" id="r-l1">• 미끄러지는 각도가 큰 경우: <strong>사포 면을 아래로 했을 때</strong><br>• 까닭: 빗면의 기울기가 커질수록 나무 도막이 빗면을 따라 미끄러져 내려가려는 힘이 커지고 마찰력도 함께 커지므로, 마찰력이 더 큰 사포 면을 아래로 했을 때가 나무 면을 아래로 했을 때보다 나무 도막이 미끄러지기 시작하는 각도가 더 크다.</div></div></li>
+    </ol>
+  </section>
+
+  <!-- 개념 : 크기와 방향 -->
+  <section class="sec" id="concept1">
+    <span class="eyebrow">📘 교과서 개념</span>
+    <div class="sec-head"><h2>마찰력의 크기와 방향</h2><span class="page">교과서 169쪽</span></div>
+    <p>나무 도막의 사포 면을 아래로 한 경우가 나무 면을 아래로 한 경우보다 접촉면이 거칠어서 잘 미끄러지지 않는다. 마찰력은 접촉면이 나무일 때보다 사포일 때 크게 작용하고, 나무 도막의 <strong>운동 방향과 반대 방향</strong>으로 작용한다.</p>
+    <p>그림 Ⅴ-10과 같이 물체의 무게가 같은 경우 거친 바닥에 놓인 물체를 움직이게 할 때 마찰력이 크게 작용한다. 또 바닥의 거칠기가 같은 경우 무거운 물체를 움직이게 할 때 마찰력이 크게 작용한다.</p>
+    <figure class="fig" style="margin-top:10px"><img src="images/friction-size.png" alt="매끄러운 바닥의 상자, 거친 바닥의 상자, 거친 바닥의 두 배로 쌓은 상자를 미는 학생"></figure>
+    <div class="figcap3"><span>매끄러운 바닥</span><span>거친 바닥</span><span>거친 바닥 · 더 무거운 물체</span></div>
+    <p style="text-align:center;font-size:15px;color:var(--muted);margin:4px 0 0">그림 Ⅴ-10 마찰력의 크기 | 마찰력의 크기는 접촉면의 거칠기와 물체의 무게에 따라 달라진다.</p>
+    <div class="def" style="margin-top:14px">마찰력은 접촉하는 두 물체 사이의 접촉면이 <strong>거칠수록</strong>, 물체가 <strong>무거울수록</strong> 크게 작용한다.</div>
+
+    <h3 style="margin:20px 0 4px;font-size:20px">🔎 바닥과 무게를 바꿔 보자</h3>
+    <div class="cmp">
+      <div class="cmpstage"><svg id="csvg" viewBox="0 0 520 250" aria-label="바닥의 거칠기와 상자 무게에 따른 마찰력 비교"></svg></div>
+      <div class="opt">
+        <div><div class="lbl">바닥</div><div class="seg" id="c-floor"><button data-v="smooth" aria-pressed="true">매끄러운 바닥</button><button data-v="rough" aria-pressed="false">거친 바닥</button></div></div>
+        <div><div class="lbl">상자</div><div class="seg" id="c-box"><button data-v="1" aria-pressed="true">1개</button><button data-v="2" aria-pressed="false">2개(더 무거움)</button></div></div>
+        <div class="meter"><small style="color:var(--muted);font-size:14px">상자를 움직이려 할 때 마찰력</small><br><b id="c-out">작다</b><div id="c-desc" style="font-size:15px;margin-top:4px"></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 마찰력의 이용 -->
+  <section class="sec" id="uses">
+    <span class="eyebrow">🔎 생활 속 과학</span>
+    <div class="sec-head"><h2>마찰력의 이용</h2><span class="page">교과서 169쪽</span></div>
+    <p>우리는 일상생활에서 등산화나 계단 끝에 부착한 미끄럼 방지 테이프와 같이 마찰력을 크게 하여 미끄러지는 것을 막기도 하고, 물 미끄럼틀처럼 마찰력을 작게 하여 잘 미끄러지게 하기도 한다.</p>
+    <div class="ex ex3">
+      <div class="excard">
+        <figure class="fig"><img src="images/hiking-boots.png" alt="울퉁불퉁한 등산화 바닥"></figure>
+        <h3>🥾 등산화 바닥</h3>
+        <button class="btn ghost small" data-reveal="r-u1">마찰력을 크게? 작게?</button>
+        <div class="reveal" id="r-u1"><span class="tag2 up">마찰력 크게</span><br>바닥을 울퉁불퉁하게 만들어 접촉면을 거칠게 하므로 미끄러운 산길에서도 잘 미끄러지지 않는다.</div>
+      </div>
+      <div class="excard">
+        <figure class="fig"><img src="images/antislip-stairs.png" alt="계단 끝에 붙인 회색 미끄럼 방지 테이프"></figure>
+        <h3>🪜 계단 끝 미끄럼 방지 테이프</h3>
+        <button class="btn ghost small" data-reveal="r-u2">마찰력을 크게? 작게?</button>
+        <div class="reveal" id="r-u2"><span class="tag2 up">마찰력 크게</span><br>거친 테이프를 붙여 계단에서 발이 미끄러지는 것을 막는다.</div>
+      </div>
+      <div class="excard">
+        <figure class="fig"><img src="images/water-slide.png" alt="물이 흐르는 미끄럼틀을 타고 내려오는 아이"></figure>
+        <h3>🛝 물 미끄럼틀</h3>
+        <button class="btn ghost small" data-reveal="r-u3">마찰력을 크게? 작게?</button>
+        <div class="reveal" id="r-u3"><span class="tag2 down">마찰력 작게</span><br>미끄럼틀에 물을 흘려 마찰력을 작게 하므로 잘 미끄러져 내려온다.</div>
+      </div>
+    </div>
+    <p style="text-align:center;font-size:15px;color:var(--muted);margin:8px 0 0">그림 Ⅴ-11 마찰력의 이용</p>
+    <div class="two">
+      <div class="card"><h3>⬆️ 마찰력을 크게 하는 예</h3><ul>
+        <li>겨울철에 눈이 쌓인 도로에 모래를 뿌린다.</li>
+        <li>방향을 빠르게 바꾸어야 하는 운동 경기를 할 때 마찰력이 큰 신발을 신는다.</li>
+        <li>눈길을 달리는 자동차 바퀴에 체인을 감는다.</li></ul></div>
+      <div class="card"><h3>⬇️ 마찰력을 작게 하는 예</h3><ul>
+        <li>바퀴에 베어링을 사용한다.</li>
+        <li>기계끼리 닿아 움직이는 부분에 윤활유를 칠한다.</li>
+        <li>자기 부상 열차가 공중에 뜬 상태에서 달린다.</li></ul></div>
+    </div>
+  </section>
+
+  <!-- 스스로 확인하기 -->
+  <section class="sec" id="check">
+    <span class="eyebrow">✅ 스스로 확인하기</span>
+    <div class="sec-head"><h2>배운 내용, 확인해 볼까요?</h2><span class="page">교과서 169쪽</span></div>
+
+    <div class="q">
+      <div class="ask"><span class="num">1</span><div>문장을 완성해 보자.<br>물체가 어떤 면에 접촉하여 운동할 때 접촉면에서 물체의 운동을 방해하는 힘을 <input class="blank" data-ans="마찰력" aria-label="빈칸 1">(이)라고 한다.</div></div>
+      <button class="btn small" data-blank>정답 확인</button>
+      <div class="fb"></div>
+    </div>
+
+    <div class="q">
+      <div class="ask"><span class="num">2</span><div>문장이 옳으면 O, 옳지 않으면 X를 선택해 보자.<br><strong>마찰력은 물체의 운동 방향과 반대 방향으로 작용한다.</strong></div></div>
+      <div class="choices" data-answer="O"><button class="choice">O</button><button class="choice">X</button></div>
+      <div class="fb" data-wrong="가상 실험에서 나무 도막이 미끄러져 내려갈 때 빨간 화살표의 방향을 떠올려 보자.">정답은 <strong>O</strong>! 마찰력은 물체의 운동을 방해하는 힘이므로 운동 방향과 반대 방향으로 작용해요.</div>
+    </div>
+
+    <div class="q">
+      <div class="ask"><span class="num">3</span><div><strong>의사 결정 능력</strong> | 일상생활에서 마찰력을 크게 하거나 작게 했던 경험을 이야기해 보자.</div></div>
+      <button class="btn small" data-reveal="r-c3">예시 답안 보기</button>
+      <div class="reveal" id="r-c3">• <strong>마찰력을 크게 한 경우</strong>: 눈 오는 날 등산을 할 때 신발에 체인을 감았다, 뜀틀을 할 때 손에 횟가루를 묻혔다 등<br>• <strong>마찰력을 작게 한 경우</strong>: 자전거의 체인에 윤활유를 사용했다, 창문을 열고 닫을 때 기름칠을 했다 등</div>
+    </div>
+  </section>
+
+  <!-- 개념 확인 문제 -->
+  <section class="sec" id="more">
+    <span class="eyebrow">✏️ 개념 확인 문제</span>
+    <div class="sec-head"><h2>조금 더 풀어볼까요?</h2><span class="page">마찰력 연습 문제</span></div>
+
+    <div class="q">
+      <div class="ask"><span class="num">1</span><div>바닥 위에서 상자가 <strong>오른쪽</strong>으로 미끄러지고 있다. 상자에 작용하는 마찰력의 방향은?</div></div>
+      <div class="choices" data-answer="왼쪽">
+        <button class="choice">오른쪽</button><button class="choice">왼쪽</button><button class="choice">위쪽</button>
+      </div>
+      <div class="fb" data-wrong="마찰력은 물체의 운동을 방해하는 힘이에요.">정답은 <strong>왼쪽</strong>! 마찰력은 운동 방향(오른쪽)과 반대 방향으로 작용해요.</div>
+    </div>
+
+    <div class="q">
+      <div class="ask"><span class="num">2</span><div>문장이 옳으면 O, 옳지 않으면 X를 선택해 보자.<br><strong>바닥의 거칠기가 같을 때, 물체가 무거울수록 마찰력이 작게 작용한다.</strong></div></div>
+      <div class="choices" data-answer="X"><button class="choice">O</button><button class="choice">X</button></div>
+      <div class="fb" data-wrong="그림 Ⅴ-10의 세 번째 그림에서 상자 두 개를 미는 학생을 떠올려 보자.">정답은 <strong>X</strong>! 물체가 <strong>무거울수록 마찰력이 크게</strong> 작용해요.</div>
+    </div>
+
+    <div class="q">
+      <div class="ask"><span class="num">3</span><div>빗면 위의 나무 도막이 미끄러지기 시작하는 각도가 가장 클 것으로 예상되는 경우는?</div></div>
+      <div class="choices" data-answer="사포 면을 아래로 놓았을 때">
+        <button class="choice">나무 면을 아래로 놓았을 때</button><button class="choice">사포 면을 아래로 놓았을 때</button><button class="choice">두 경우 모두 같다</button>
+      </div>
+      <div class="fb" data-wrong="접촉면이 거칠수록 마찰력이 어떻게 되는지 생각해 보자.">정답은 <strong>사포 면을 아래로 놓았을 때</strong>! 접촉면이 거칠어 마찰력이 크므로 더 많이 기울여야 미끄러져요.</div>
+    </div>
+
+    <div class="q">
+      <div class="ask"><span class="num">4</span><div>마찰력을 크게 하는 예인지, 작게 하는 예인지 연결하시오.</div></div>
+      <div class="match">
+        <span>(1) 눈길을 달리는 자동차 바퀴에 체인을 감는다.</span>
+        <select data-ans="마찰력을 크게"><option value="">선택하기</option><option>마찰력을 크게</option><option>마찰력을 작게</option></select>
+        <span>(2) 기계의 움직이는 부분에 윤활유를 칠한다.</span>
+        <select data-ans="마찰력을 작게"><option value="">선택하기</option><option>마찰력을 크게</option><option>마찰력을 작게</option></select>
+        <span>(3) 겨울철 눈이 쌓인 도로에 모래를 뿌린다.</span>
+        <select data-ans="마찰력을 크게"><option value="">선택하기</option><option>마찰력을 크게</option><option>마찰력을 작게</option></select>
+        <span>(4) 자기 부상 열차가 공중에 뜬 상태에서 달린다.</span>
+        <select data-ans="마찰력을 작게"><option value="">선택하기</option><option>마찰력을 크게</option><option>마찰력을 작게</option></select>
+      </div>
+      <button class="btn small" data-match-check>정답 확인</button>
+      <div class="fb" data-ok="정답! 체인과 모래는 접촉면을 거칠게 하여 <strong>마찰력을 크게</strong>, 윤활유와 자기 부상 열차는 <strong>마찰력을 작게</strong> 해요." data-no="빨간 칸을 다시 골라 보자. 잘 미끄러지지 않게 하는 것인지, 잘 미끄러지게 하는 것인지 생각해 봐요."></div>
+    </div>
+
+    <div class="q">
+      <div class="ask"><span class="num">5</span><div>마찰력의 크기에 영향을 주는 요인을 &lt;보기&gt;에서 모두 고르시오.</div></div>
+      <div class="bogi" data-answer="ㄱ,ㄷ">
+        <div class="it"><button class="pick" aria-pressed="false" data-k="ㄱ">ㄱ</button><div>접촉면의 거칠기</div></div>
+        <div class="it"><button class="pick" aria-pressed="false" data-k="ㄴ">ㄴ</button><div>물체의 색깔</div></div>
+        <div class="it"><button class="pick" aria-pressed="false" data-k="ㄷ">ㄷ</button><div>물체의 무게</div></div>
+      </div>
+      <button class="btn small" data-bogi-check>정답 확인</button>
+      <div class="fb" data-ok="<strong>답 ㄱ, ㄷ</strong> — 마찰력은 접촉면이 거칠수록, 물체가 무거울수록 커요. 물체의 색깔은 마찰력과 관계없어요." data-no="아쉬워요! 그림 Ⅴ-10에서 무엇을 바꾸었을 때 마찰력이 달라졌는지 떠올려 보자."></div>
+    </div>
+  </section>
+
+  <!-- 정리 -->
+  <section class="sec" id="recap">
+    <span class="eyebrow">🧠 배운 내용 정리하기</span>
+    <div class="sec-head"><h2>이 단원에서 배운 내용을 정리해 보자.</h2><span class="page">교과서 168~169쪽</span></div>
+    <div class="recap6">
+      <div class="rc"><span class="ic">🤝</span><b>마찰력</b>두 물체의 접촉면에서 물체의 운동을 방해하는 힘</div>
+      <div class="rc" style="border-left:5px solid var(--f1)"><span class="ic">📈</span><b>마찰력의 크기</b>접촉면이 거칠수록, 물체가 무거울수록 크다.</div>
+      <div class="rc" style="border-left:5px solid var(--f2)"><span class="ic">↔️</span><b>마찰력의 방향</b>물체의 운동 방향과 반대 방향</div>
+      <div class="rc"><span class="ic">📐</span><b>해 보기 결과</b>사포 면을 아래로 했을 때 미끄러지기 시작하는 각도가 더 크다.</div>
+      <div class="rc"><span class="ic">🥾</span><b>마찰력을 크게</b>등산화 바닥, 미끄럼 방지 테이프, 모래 뿌리기, 바퀴 체인</div>
+      <div class="rc"><span class="ic">🛝</span><b>마찰력을 작게</b>물 미끄럼틀, 베어링, 윤활유, 자기 부상 열차</div>
+    </div>
+  </section>
+
+  <!-- 평가 길잡이 -->
+  <section class="sec" id="eval">
+    <span class="eyebrow">🌱 평가 길잡이</span>
+    <div class="sec-head"><h2>활동을 잘했는지 생각하며 체크해 보자</h2><span class="page">교과서 168쪽</span></div>
+    <div class="eval"><div>경사계를 이용하여 나무 도막이 미끄러지기 시작하는 각도를 측정했는가?</div><div class="stars"></div></div>
+    <div class="eval"><div>마찰력과 접촉면의 거칠기 사이의 관계를 설명할 수 있는가?</div><div class="stars"></div></div>
+    <div class="eval"><div>마찰력의 방향과 생활 속에서 마찰력을 크게 하거나 작게 하는 예를 말할 수 있는가?</div><div class="stars"></div></div>
+  </section>
+
+  <footer>미래엔 중학교 과학 1 · 5단원 힘의 작용 · 수업 학습자료</footer>
+</main>
+
+<script>
+(function(){
+  /* ---------- 공통 상호작용 ---------- */
+  function showFb(fb,ok,html){fb.classList.add('show');fb.classList.toggle('ok',ok);fb.classList.toggle('no',!ok);fb.innerHTML=html;}
+  document.querySelectorAll('[data-reveal]').forEach(function(b){
+    b.addEventListener('click',function(){
+      var el=document.getElementById(b.dataset.reveal);
+      b.setAttribute('aria-expanded',el.classList.toggle('show'));
+    });
+  });
+  document.querySelectorAll('.choices').forEach(function(g){
+    var ans=g.dataset.answer, fb=g.nextElementSibling, okHtml=fb.innerHTML;
+    var wrong=fb.dataset.wrong||'다시 생각해 보자!';
+    g.querySelectorAll('.choice').forEach(function(c){
+      c.addEventListener('click',function(){
+        g.querySelectorAll('.choice').forEach(function(x){x.classList.remove('right','wrong')});
+        var ok=c.textContent.trim()===ans;
+        c.classList.add(ok?'right':'wrong');
+        showFb(fb,ok,ok?okHtml:'🤔 '+wrong);
+      });
+    });
+  });
+  document.querySelectorAll('[data-blank]').forEach(function(b){
+    var q=b.closest('.q'), inps=q.querySelectorAll('.blank'), fb=q.querySelector('.fb');
+    function go(){
+      var all=true, empty=false;
+      inps.forEach(function(inp){
+        var v=inp.value.replace(/\s/g,''), ok=inp.dataset.ans.split('|').indexOf(v)>-1;
+        if(!v)empty=true; if(!ok)all=false;
+        inp.classList.toggle('right',ok); inp.classList.toggle('wrong',!ok);
+      });
+      showFb(fb,all,all?'정답! 🎉':(empty?'빈칸을 모두 채운 뒤 확인해 보자.':'빨간 빈칸을 다시 생각해 보자. 개념 설명을 다시 읽어 봐요.'));
+    }
+    b.addEventListener('click',go);
+    inps.forEach(function(i){i.addEventListener('keydown',function(e){if(e.key==='Enter')go();});});
+  });
+  document.querySelectorAll('[data-match-check]').forEach(function(b){
+    var q=b.closest('.q'), fb=q.querySelector('.fb');
+    b.addEventListener('click',function(){
+      var all=true;
+      q.querySelectorAll('select').forEach(function(s){var ok=s.value===s.dataset.ans;if(!ok)all=false;s.classList.toggle('right',ok);s.classList.toggle('wrong',!ok);});
+      showFb(fb,all,all?fb.dataset.ok:fb.dataset.no);
+    });
+  });
+  document.querySelectorAll('.pick').forEach(function(p){
+    p.addEventListener('click',function(){p.setAttribute('aria-pressed',p.getAttribute('aria-pressed')!=='true');});
+  });
+  document.querySelectorAll('[data-bogi-check]').forEach(function(b){
+    var q=b.closest('.q'), box=q.querySelector('.bogi'), fb=q.querySelector('.fb');
+    b.addEventListener('click',function(){
+      var sel=[].slice.call(box.querySelectorAll('.pick[aria-pressed="true"]')).map(function(p){return p.dataset.k;}).join(',');
+      if(!sel){showFb(fb,false,'보기에서 답을 먼저 골라 보자.');return;}
+      var ok=sel===box.dataset.answer; showFb(fb,ok,ok?fb.dataset.ok:fb.dataset.no);
+    });
+  });
+  document.querySelectorAll('.stars').forEach(function(s){
+    for(var i=1;i<=3;i++)(function(n){
+      var b=document.createElement('button');b.textContent='★';b.setAttribute('aria-label','별 '+n+'개');
+      b.addEventListener('click',function(){s.querySelectorAll('button').forEach(function(x,k){x.classList.toggle('on',k<n)})});
+      s.appendChild(b);
+    })(i);
+  });
+
+
+
+  var NS='http://www.w3.org/2000/svg';
+  function el(t,a,p){var e=document.createElementNS(NS,t);for(var k in a)e.setAttribute(k,a[k]);if(p)p.appendChild(e);return e;}
+  function arrowPath(g,x1,y1,x2,y2,col,w){
+    var dx=x2-x1,dy=y2-y1,L=Math.hypot(dx,dy); if(L<4)return;
+    var ux=dx/L,uy=dy/L,hl=Math.min(14,L*0.6),hx=x2-ux*hl,hy=y2-uy*hl,nx=-uy*8,ny=ux*8;
+    el('line',{x1:x1,y1:y1,x2:hx,y2:hy,stroke:col,'stroke-width':w||6},g);
+    el('polygon',{points:x2+','+y2+' '+(hx+nx)+','+(hy+ny)+' '+(hx-nx)+','+(hy-ny),fill:col},g);
+  }
+  var RED='#E0413A', BLUE='#1F63C8';
+
+  /* ---------- 빗면 가상 실험 ---------- */
+  var sv=document.getElementById('isvg'), tilt=document.getElementById('tilt');
+  var PX=610, PY=350, L=450, TH=16, BW=86, BH=36;
+  var TH_ANG={sand:31, wood:18}; // 미끄러지기 시작하는 대략적인 각도
+  var face='sand', theta=0, s=360, sliding=false, slipped=false, vel=0, slipAt=null, autoOn=false;
+  var rec={sand:null,wood:null}, limit=jitter('sand');
+  function jitter(f){return TH_ANG[f]+Math.round((Math.random()*3-1.5)*2)/2;}
+  el('rect',{x:0,y:PY,width:680,height:30,fill:'#E9EEF4'},sv);
+  var gBoard=el('g',{},sv), gBlock=el('g',{},sv), gArr=el('g',{},sv), gTxt=el('g',{},sv);
+  function rad(d){return d*Math.PI/180;}
+  function draw(){
+    var t=rad(theta), ux=-Math.cos(t), uy=-Math.sin(t), nx=-uy, ny=ux; // nUp=(-uy,ux)
+    // 위쪽 법선: (sin t, -cos t)
+    nx=Math.sin(t); ny=-Math.cos(t);
+    var bx=PX+nx*TH, by=PY+ny*TH; // 윗면 오른쪽 끝
+    gBoard.innerHTML='';
+    el('polygon',{points:[PX+','+PY, bx+','+by, (bx+ux*L)+','+(by+uy*L), (PX+ux*L)+','+(PY+uy*L)].join(' '),fill:'#F1DDB8',stroke:'#C9A46C','stroke-width':2},gBoard);
+    // 받침 (들어 올린 쪽 손 대신 받침대)
+    var lx=PX+ux*L, ly=PY+uy*L;
+    if(theta>0.5) el('rect',{x:lx-8,y:ly,width:16,height:PY-ly,fill:'#B9C3D1',rx:3},gBoard);
+    // 스마트 기기(경사계)
+    var ps=150, pcx=bx+ux*ps+nx*8, pcy=by+uy*ps+ny*8;
+    var gp=el('g',{transform:'translate('+pcx+','+pcy+') rotate('+theta+')'},gBoard);
+    el('rect',{x:-40,y:-8,width:80,height:16,rx:4,fill:'#2C6FD1',stroke:'#1B4E9B','stroke-width':1.5},gp);
+    var pt=el('text',{x:0,y:5,'text-anchor':'middle','font-size':12,'font-weight':900,fill:'#fff'},gp); pt.textContent=theta.toFixed(1)+'°';
+    // 나무 도막
+    gBlock.innerHTML='';
+    var cx=bx+ux*s+nx*BH/2, cy=by+uy*s+ny*BH/2;
+    var gb=el('g',{transform:'translate('+cx+','+cy+') rotate('+theta+')'},gBlock);
+    el('rect',{x:-BW/2,y:-BH/2,width:BW,height:BH,rx:3,fill:'#D9A066',stroke:'#A5683A','stroke-width':2},gb);
+    el('rect',{x:-BW/2,y:BH/2-7,width:BW,height:7,fill:face==='sand'?'#7D6A55':'#E8C690'},gb);
+    var bt=el('text',{x:0,y:2,'text-anchor':'middle','font-size':12,'font-weight':700,fill:'#5A3A1C'},gb); bt.textContent=face==='sand'?'사포 면 ↓':'나무 면 ↓';
+    // 화살표 (접촉면 바로 위)
+    gArr.innerHTML='';
+    var ax=bx+ux*s+nx*4, ay=by+uy*s+ny*4;
+    if(theta>0.5 && !(slipped&&!sliding)){
+      var mag=Math.sin(t)*170;
+      if(!sliding){ arrowPath(gArr,ax,ay,ax-ux*mag,ay-uy*mag,BLUE,6); arrowPath(gArr,ax,ay,ax+ux*mag,ay+uy*mag,RED,6); }
+      else { var fk=Math.sin(rad(limit))*0.75*170; arrowPath(gArr,ax,ay,ax+ux*fk,ay+uy*fk,RED,6);
+             var mx=cx+nx*40, my=cy+ny*40; arrowPath(gArr,mx-ux*30,my-uy*30,mx-ux*80,my-uy*80,'#5B6578',4);
+             var mt=el('text',{x:mx-ux*55+nx*14,y:my-uy*55+ny*14,'text-anchor':'middle','font-size':13,'font-weight':700,fill:'#5B6578'},gArr); mt.textContent='운동 방향'; }
+    }
+    // 각도 표시
+    gTxt.innerHTML='';
+    var at=el('text',{x:24,y:40,'font-size':22,'font-weight':900,fill:'#1D2433'},gTxt); at.textContent='기울기 '+theta.toFixed(1)+'°';
+    if(slipAt!==null){var st=el('text',{x:24,y:68,'font-size':16,'font-weight':700,fill:RED},gTxt); st.textContent='미끄러지기 시작한 각도: '+slipAt.toFixed(1)+'°';}
+  }
+  var res=document.getElementById('i-result');
+  function setTheta(v){
+    if(slipped&&!sliding){theta=v;tilt.value=v;draw();return;}
+    theta=v; tilt.value=v;
+    if(!slipped && theta>=limit){ startSlide(); }
+    draw();
+  }
+  function startSlide(){
+    slipped=true; sliding=true; slipAt=theta; autoOn=false; document.getElementById('auto').textContent='▶ 천천히 기울이기';
+    rec[face]=slipAt; document.getElementById('rec-'+face).textContent=slipAt.toFixed(1)+'°';
+    vel=0; requestAnimationFrame(slide); report();
+  }
+  function slide(){
+    vel+=0.35; s-=vel;
+    if(s<=BW/2+6){s=BW/2+6; sliding=false; draw(); return;}
+    draw(); requestAnimationFrame(slide);
+  }
+  function report(){
+    if(rec.sand!==null&&rec.wood!==null){
+      res.className='result ok';
+      res.innerHTML='<div class="formula">🎉 측정 완료! 사포 면 '+rec.sand.toFixed(1)+'° &gt; 나무 면 '+rec.wood.toFixed(1)+'°</div><div><strong>사포 면</strong>을 아래로 했을 때 더 많이 기울여야 미끄러져요. 접촉면이 거친 사포 면에서 <strong>마찰력이 더 크기</strong> 때문이에요.</div>';
+    } else {
+      var other=face==='sand'?'나무 면':'사포 면';
+      res.className='result'; res.innerHTML='👍 '+(face==='sand'?'사포 면':'나무 면')+' 측정 완료! 이제 「나무 도막 다시 올려놓기」 후 <strong>'+other+'</strong>을 아래로 하여 측정해 보자.';
+    }
+  }
+  function resetBlock(){
+    autoOn=false; document.getElementById('auto').textContent='▶ 천천히 기울이기';
+    theta=0; tilt.value=0; s=360; sliding=false; slipped=false; slipAt=null; limit=jitter(face); draw();
+  }
+  tilt.addEventListener('input',function(){setTheta(+tilt.value);});
+  document.getElementById('ireset').addEventListener('click',resetBlock);
+  document.querySelectorAll('[data-face]').forEach(function(b){
+    b.addEventListener('click',function(){
+      document.querySelectorAll('[data-face]').forEach(function(x){x.setAttribute('aria-pressed',x===b);});
+      face=b.dataset.face; resetBlock();
+    });
+  });
+  var autoBtn=document.getElementById('auto');
+  autoBtn.addEventListener('click',function(){
+    if(autoOn){autoOn=false;autoBtn.textContent='▶ 천천히 기울이기';return;}
+    if(slipped){resetBlock();}
+    autoOn=true; autoBtn.textContent='⏸ 멈추기';
+    (function step(){ if(!autoOn)return; var v=Math.min(40,theta+0.1); setTheta(Math.round(v*10)/10);
+      if(theta>=40){autoOn=false;autoBtn.textContent='▶ 천천히 기울이기';return;} if(autoOn)requestAnimationFrame(step); })();
+  });
+  draw();
+
+  /* ---------- 바닥·무게 비교 ---------- */
+  var cs=document.getElementById('csvg'), floor='smooth', boxes=1;
+  function drawC(){
+    cs.innerHTML='';
+    var rough=floor==='rough';
+    el('rect',{x:0,y:200,width:520,height:50,fill:rough?'#B9765A':'#DCE3EC'},cs);
+    if(rough){for(var i=0;i<40;i++) el('circle',{cx:(i*53)%520+8,cy:212+(i*17)%30,r:2.5,fill:'#8C5238'},cs);}
+    else { el('rect',{x:0,y:200,width:520,height:6,fill:'#fff',opacity:.7},cs); }
+    var bx=220, bw=110, bh=90;
+    for(var k=0;k<boxes;k++){
+      var y=200-bh*(k+1);
+      el('rect',{x:bx,y:y,width:bw,height:bh,fill:'#E2C38E',stroke:'#9C7146','stroke-width':3},cs);
+      el('line',{x1:bx+8,y1:y+8,x2:bx+bw-8,y2:y+bh-8,stroke:'#B8915A','stroke-width':6},cs);
+      el('line',{x1:bx+bw-8,y1:y+8,x2:bx+8,y2:y+bh-8,stroke:'#B8915A','stroke-width':6},cs);
+    }
+    var level=(rough?2:1)*boxes; // 1,2,4
+    var fl=[0,40,75,0,140][level];
+    var py=200-bh/2;
+    var pl=fl+30;
+    arrowPath(cs,bx-4-pl,py,bx-4,py,BLUE,7);
+    var t1=el('text',{x:bx-4-pl/2,y:py-14,'text-anchor':'middle','font-size':15,'font-weight':700,fill:BLUE},cs); t1.textContent='미는 힘';
+    arrowPath(cs,bx+bw/2,212,bx+bw/2-fl,212,RED,7);
+    var t2=el('text',{x:bx+bw/2+8,y:240,'text-anchor':'start','font-size':15,'font-weight':900,fill:rough?'#FFFFFF':RED},cs); t2.textContent='마찰력';
+    var out=['','작다','크다','','더 크다'][level];
+    document.getElementById('c-out').textContent=out;
+    document.getElementById('c-desc').innerHTML={1:'매끄러운 바닥에서는 마찰력이 작아 상자를 쉽게 밀 수 있어요.',2:boxes===1?'바닥이 <strong>거칠어서</strong> 매끄러운 바닥보다 마찰력이 커요.':'상자가 <strong>무거워서</strong> 상자 1개일 때보다 마찰력이 커요.',4:'바닥이 거칠고 상자도 무거워서 마찰력이 가장 커요.'}[level];
+  }
+  function bindSeg(id,cb){var g=document.getElementById(id);g.querySelectorAll('button').forEach(function(b){b.addEventListener('click',function(){g.querySelectorAll('button').forEach(function(x){x.setAttribute('aria-pressed',x===b);});cb(b.dataset.v);drawC();});});}
+  bindSeg('c-floor',function(v){floor=v;}); bindSeg('c-box',function(v){boxes=+v;});
+  drawC();
+})();
+</script>
+</body>
+</html>
